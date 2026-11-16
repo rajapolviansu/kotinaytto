@@ -2,6 +2,18 @@
 
 Moduulinen kotinäyttö, josta näkee perheen menot suoraan.
 
+## Mockup
+
+### Tumma teema
+
+![Kotinäytön mockup, tumma teema](docs/mockup-dark.png)
+
+### Vaalea teema
+
+![Kotinäytön mockup, vaalea teema](docs/mockup-light.png)
+
+Kuvat ovat havainnollistavia luonnoksia, ei sitova ulkoasu. Tapahtumat ja tehtävät ovat esimerkkejä.
+
 ## Vaatimusmäärittely
 
 ### 1. Kalenterinäkymä
