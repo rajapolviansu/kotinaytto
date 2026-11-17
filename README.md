@@ -36,6 +36,10 @@ Rajapinnat: `GET /api/events`, `GET /api/auth/start`, `GET /api/auth/callback` j
 
 **Paikallinen testaus:** kopioi `.env.example` tiedostoksi `.env`, täytä arvot ja aja `npx netlify-cli dev`. Avaa `http://localhost:8888` (ei 5173, koska functionit toimivat vain Netlify-palvelimen kautta).
 
+### Asennus puhelimelle (kokoruutu)
+
+Sivu on asennettava web-sovellus (PWA), joka avautuu ilman selaimen osoitepalkkia. Avaa `https://kotinaytto.netlify.app/#key=<näyttöavain>` puhelimen selaimessa ja valitse Chromessa valikosta (⋮) **Asenna sovellus** (tai **Lisää aloitusnäytölle**), Safarissa jakovalikosta **Lisää koti-valikkoon**. Käynnistä sovellus sen jälkeen aloitusnäytön kuvakkeesta. Jos olet jo asentanut pikakuvakkeen aiemmin, poista se ja asenna uudelleen.
+
 ## Vaatimusmäärittely
 
 ### 1. Kalenterinäkymä
