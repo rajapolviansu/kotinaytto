@@ -2,29 +2,52 @@
 
 Moduulinen kotinäyttö, josta näkee perheen menot suoraan.
 
-## Mockup
+<img width="1208" height="577" alt="image" src="https://github.com/user-attachments/assets/b0f976d6-476f-49dc-91f5-296e38d49eb2" />
 
-### Tumma teema
 
-![Kotinäytön mockup, tumma teema](docs/mockup-dark.png)
+## Kehitys
 
-### Vaalea teema
+Teknologiat: [React](https://react.dev/), [TypeScript](https://www.typescriptlang.org/), [Vite](https://vite.dev/) ja [Vitest](https://vitest.dev/).
 
-![Kotinäytön mockup, vaalea teema](docs/mockup-light.png)
+```bash
+npm install        # asenna riippuvuudet
+npm run dev        # kehityspalvelin
+npm run typecheck  # TypeScript-tyyppitarkistus
+npm run lint       # ESLint
+npm test           # yksikkötestit
+npm run build      # tyyppitarkistus + tuotantobuild
+```
 
-Kuvat ovat havainnollistavia luonnoksia, ei sitova ulkoasu. Tapahtumat ja tehtävät ovat esimerkkejä.
+CI ajaa lintin, tyyppitarkistuksen, testit ja buildin jokaiselle pull requestille ja pushille `develop`- ja `main`-haaroihin.
+
+### Google-kalenterin yhdistäminen
+
+Kirjautumisen ja tokenit hoitaa pieni backend (Netlify Functions, kansio `netlify/`). Google-kirjautuminen tehdään kerran, ja palvelin säilyttää refresh tokenin ([Netlify Blobs](https://docs.netlify.com/blobs/overview/)) ja uusii access tokenin itse, joten näytöllä ei tarvitse kirjautua uudelleen. Selain ei näe Googlen tokeneita eikä client secretiä. Sovellus pyytää vain kalenterin lukuoikeuden (`calendar.readonly`). Ilman backendiä (`npm run dev`) sovellus näyttää mock-datan.
+
+Rajapinnat: `GET /api/events`, `GET /api/auth/start`, `GET /api/auth/callback` ja `POST /api/disconnect`. Tapahtumat ja yhteyden katkaisu vaativat **näyttöavaimen** (jaettu salasana, otsikko `x-display-key`), jottei kukaan muu pääse lukemaan kalenteria julkisesta osoitteesta.
+
+**Käyttöönotto**
+
+1. Google Cloud Consolessa: ota käyttöön **Google Calendar API** ja luo **OAuth client ID** (tyyppi _Web application_). Lisää _Authorized redirect URIs_ -kohtaan `http://localhost:8888/api/auth/callback` ja `https://kotinaytto.netlify.app/api/auth/callback`.
+2. Siirrä OAuth-sovellus _In production_ -tilaan (_Testing_-tilassa refresh token vanhenee 7 päivässä).
+3. Luo näyttöavain, esim. `node -e "console.log(require('crypto').randomBytes(24).toString('base64url'))"`.
+4. Netlifyssä (Site configuration → Environment variables) lisää `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` ja `DISPLAY_ACCESS_KEY` (kaksi jälkimmäistä merkitään _Contains secret values_) ja deployaa uudelleen. Mallina `.env.example`.
+5. Avaa näyttölaitteella `https://kotinaytto.netlify.app/#key=<näyttöavain>` (avain tallentuu laitteelle ja poistuu osoiterivistä), paina **Yhdistä Google-kalenteri** ja anna lupa.
+
+**Paikallinen testaus:** kopioi `.env.example` tiedostoksi `.env`, täytä arvot ja aja `npx netlify-cli dev`. Avaa `http://localhost:8888` (ei 5173, koska functionit toimivat vain Netlify-palvelimen kautta).
 
 ## Vaatimusmäärittely
 
 ### 1. Kalenterinäkymä
 
-- **V1.1** Sovellus näyttää kalenterin kuukausinäkymänä (yksi kuukausi kerrallaan).
-- **V1.2** Käyttäjä voi selata edelliseen ja seuraavaan kuukauteen sekä palata kuluvaan kuukauteen.
-- **V1.3** Kuluva päivä on korostettu näkymässä.
-- **V1.4** Kunkin päivän tapahtumat (menot) näkyvät päivän kohdalla kuukausinäkymässä.
-- **V1.5** Kalenteriin voi yhdistää Gmail- eli Google-tilin (Google Calendar) kirjautumalla tilille Googlen OAuth 2.0 -valtuutuksella. Sovellus pyytää vain kalenterin lukuoikeuden.
-- **V1.6** Yhdistetty tili säilyy, eikä käyttäjän tarvitse kirjautua uudelleen joka käynnistyksellä. Tilin yhteyden voi myös katkaista.
-- **V1.7** Tuki useammalle kalenterille (esim. perheenjäsenten kalenterit) on toivottavaa; niiden tapahtumat erotetaan toisistaan värein.
+- ✅ **V1.1** Sovellus näyttää kalenterin kuukausinäkymänä (yksi kuukausi kerrallaan).
+- ✅ **V1.2** Käyttäjä voi selata edelliseen ja seuraavaan kuukauteen sekä palata kuluvaan kuukauteen.
+- ✅ **V1.3** Kuluva päivä on korostettu näkymässä.
+- ✅ **V1.4** Kunkin päivän tapahtumat (menot) näkyvät päivän kohdalla kuukausinäkymässä.
+- ✅ **V1.5** Kalenteriin voi yhdistää Gmail- eli Google-tilin (Google Calendar) kirjautumalla tilille Googlen OAuth 2.0 -valtuutuksella. Sovellus pyytää vain kalenterin lukuoikeuden.
+- ✅ **V1.6** Yhdistetty tili säilyy, eikä käyttäjän tarvitse kirjautua uudelleen joka käynnistyksellä. Tilin yhteyden voi myös katkaista.
+- ✅ **V1.7** Tuki useammalle kalenterille (esim. perheenjäsenten kalenterit) on toivottavaa; niiden tapahtumat erotetaan toisistaan värein.
+- **V1.8** Päivää napauttamalla tai klikkaamalla näkee kaikki kyseisen päivän tapahtumat, myös ne, jotka eivät mahdu kuukausiruudukon soluun. Näkymän voi sulkea, ja se on vain lukunäkymä (ei muokkausta).
 
 ### 2. Kellonaika
 
@@ -43,7 +66,7 @@ Kuvat ovat havainnollistavia luonnoksia, ei sitova ulkoasu. Tapahtumat ja tehtä
 
 - **V4.1** Kun Google-kalenteria päivitetään omalla puhelimella (tapahtuman lisäys, muokkaus tai poisto), muutos päivittyy kotinäytölle automaattisesti.
 - **V4.2** Päivitys näkyy näytöllä mahdollisimman nopeasti, tavoitteena enintään 1 minuutti muutoksesta.
-- **V4.3** Toteutus perustuu Google Calendar API:in: ensisijaisesti push-ilmoituksiin (watch/webhook) ja varamekanismina säännölliseen kyselyyn (polling) esim. minuutin välein, sekä inkrementaaliseen synkronointiin (`syncToken`).
+- **V4.3** Toteutus perustuu Google Calendar API:in: säännölliseen kyselyyn (polling) minuutin välein. Push-ilmoituksia (watch/webhook) ei käytetä, koska näyttö on vain lukunäkymä ja toimii selaimessa ilman palvelinta. Inkrementaalinen synkronointi (`syncToken`) on mahdollinen myöhempi optimointi.
 - **V4.4** Verkkoyhteyden katkettua sovellus näyttää viimeksi haetut tiedot ja ilmoittaa, ettei tieto ole ajan tasalla. Yhteyden palautuessa tiedot synkronoituvat automaattisesti.
 - **V4.5** Muutokset tehdään vain Google-kalenterissa (puhelimella); kotinäyttö on ensisijaisesti lukunäkymä.
 

@@ -1,0 +1,168 @@
+.month-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 2vmin 2.5vmin;
+  text-align: left;
+}
+
+.month-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2vmin;
+  margin-bottom: 2vmin;
+}
+
+.month-nav {
+  display: flex;
+  gap: 1vmin;
+}
+
+.month-nav button {
+  min-width: 48px;
+  min-height: 48px;
+  padding: 0 2vmin;
+  font: inherit;
+  font-size: clamp(18px, 3vmin, 32px);
+  font-weight: 600;
+  color: #e8edf5;
+  background: #1c2638;
+  border: 2px solid transparent;
+  border-radius: 1.2vmin;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.month-nav button:hover {
+  background: #263350;
+}
+
+.month-nav button:active {
+  background: #2f3f63;
+}
+
+.month-nav button:focus-visible {
+  outline: 3px solid #6aa5ff;
+  outline-offset: 2px;
+}
+
+.month-header h1 {
+  margin: 0;
+  font-size: clamp(28px, 5vmin, 56px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #e8edf5;
+}
+
+.month-weekdays,
+.month-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.8vmin;
+}
+
+.month-weekdays {
+  margin-bottom: 0.8vmin;
+  text-align: center;
+  font-size: clamp(14px, 2.2vmin, 24px);
+  color: #8b95a7;
+}
+
+.month-grid {
+  flex: 1;
+  grid-template-rows: repeat(var(--weeks), minmax(0, 1fr));
+  min-height: 0;
+}
+
+.day {
+  background: #1c2638;
+  border-radius: 1.2vmin;
+  padding: 1vmin 1.2vmin;
+  min-height: 0;
+}
+
+.day-number {
+  font-size: clamp(14px, 2.4vmin, 26px);
+  font-weight: 600;
+  color: #e8edf5;
+}
+
+.day-outside {
+  background: #131b2b;
+}
+
+.day-outside .day-number {
+  color: #4b5568;
+}
+
+/* Kuluva päivä: täyttö + rengas + lihavointi, joten korostus ei nojaa pelkkään väriin.
+   Sininen täyttö ja valkoinen numero erottuvat sekä tummalla että vaalealla pohjalla. */
+.day-today {
+  background: #2f6fe0;
+  box-shadow: 0 0 0 0.4vmin #9cc2ff;
+}
+
+.day-today .day-number {
+  color: #fff;
+  font-weight: 800;
+}
+
+.day {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.day-events {
+  list-style: none;
+  margin: 0.5vmin 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4vmin;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.event,
+.event-more {
+  font-size: clamp(11px, 1.6vmin, 18px);
+  line-height: 1.25;
+  color: #e8edf5;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Kalenterin väri vasemmassa reunassa; otsikko kertoo tapahtuman myös ilman väriä. */
+.event {
+  display: flex;
+  gap: 0.6vmin;
+  padding: 0.2vmin 0.6vmin;
+  border-left: 0.5vmin solid var(--event-color);
+  border-radius: 0.4vmin;
+  background: color-mix(in srgb, var(--event-color) 22%, transparent);
+}
+
+.event-allday {
+  background: var(--event-color);
+  color: #fff;
+  font-weight: 600;
+}
+
+.event-time {
+  flex: none;
+  opacity: 0.8;
+}
+
+.event-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.event-more {
+  color: #8b95a7;
+}

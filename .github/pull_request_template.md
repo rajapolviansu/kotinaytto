@@ -18,3 +18,4 @@
 - [ ] CI menee läpi
 - [ ] Ei jäänyt console.log-rivejä tai kommentoitua koodia
 - [ ] Dokumentaatio (README) päivitetty tarvittaessa
+- [ ] CHANGELOG.md päivitetty (kohtaan `[Julkaisematon]`)

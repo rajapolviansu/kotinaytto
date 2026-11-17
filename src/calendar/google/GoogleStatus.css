@@ -1,0 +1,45 @@
+.google-status {
+  display: flex;
+  align-items: center;
+  gap: 1vmin;
+  margin-left: auto;
+  font-size: clamp(13px, 1.8vmin, 20px);
+}
+
+.google-note {
+  color: #f0b45a;
+}
+
+.google-status button {
+  font: inherit;
+  color: #e8edf5;
+  background: #1f2a3d;
+  border: 1px solid #33425c;
+  border-radius: 0.5em;
+  padding: 0.5em 0.9em;
+  cursor: pointer;
+}
+
+.google-status button:hover {
+  background: #2a3850;
+}
+
+.google-disconnect {
+  opacity: 0.6;
+}
+
+.google-key-form {
+  display: flex;
+  align-items: center;
+  gap: 1vmin;
+}
+
+.google-key-form input {
+  font: inherit;
+  color: #e8edf5;
+  background: #121a2a;
+  border: 1px solid #33425c;
+  border-radius: 0.5em;
+  padding: 0.5em 0.9em;
+  width: 12em;
+}
