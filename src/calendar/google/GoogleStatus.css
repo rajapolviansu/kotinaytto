@@ -27,3 +27,19 @@
 .google-disconnect {
   opacity: 0.6;
 }
+
+.google-key-form {
+  display: flex;
+  align-items: center;
+  gap: 1vmin;
+}
+
+.google-key-form input {
+  font: inherit;
+  color: #e8edf5;
+  background: #121a2a;
+  border: 1px solid #33425c;
+  border-radius: 0.5em;
+  padding: 0.5em 0.9em;
+  width: 12em;
+}

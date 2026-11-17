@@ -22,14 +22,19 @@ CI ajaa lintin, tyyppitarkistuksen, testit ja buildin jokaiselle pull requestill
 
 ### Google-kalenterin yhdistäminen
 
-Sovellus käyttää Google Identity Services -kirjautumista suoraan selaimessa (vain lukuoikeus, `calendar.readonly`). Backendiä tai client secretiä ei tarvita. Ilman client ID:tä sovellus näyttää mock-datan.
+Kirjautumisen ja tokenit hoitaa pieni backend (Netlify Functions, kansio `netlify/`). Google-kirjautuminen tehdään kerran, ja palvelin säilyttää refresh tokenin ([Netlify Blobs](https://docs.netlify.com/blobs/overview/)) ja uusii access tokenin itse, joten näytöllä ei tarvitse kirjautua uudelleen. Selain ei näe Googlen tokeneita eikä client secretiä. Sovellus pyytää vain kalenterin lukuoikeuden (`calendar.readonly`). Ilman backendiä (`npm run dev`) sovellus näyttää mock-datan.
 
-1. Google Cloud Consolessa: ota käyttöön **Google Calendar API** ja luo **OAuth client ID** (tyyppi _Web application_).
-2. Lisää _Authorized JavaScript origins_ -kohtaan `http://localhost:5173` ja `https://kotinaytto.netlify.app`.
-3. Siirrä OAuth-sovellus _In production_ -tilaan (_Testing_-tilassa kirjautuminen vanhenee 7 päivässä).
-4. Paikallisesti: kopioi `.env.example` tiedostoksi `.env.local` ja täytä `VITE_GOOGLE_CLIENT_ID`. Netlifyssä: lisää sama ympäristömuuttuja (Site configuration → Environment variables) ja deployaa uudelleen.
+Rajapinnat: `GET /api/events`, `GET /api/auth/start`, `GET /api/auth/callback` ja `POST /api/disconnect`. Tapahtumat ja yhteyden katkaisu vaativat **näyttöavaimen** (jaettu salasana, otsikko `x-display-key`), jottei kukaan muu pääse lukemaan kalenteria julkisesta osoitteesta.
 
-Access token (~1 h) uusitaan hiljaa. Jos Googlen istunto on päättynyt, näytölle tulee "Kirjaudu uudelleen" -painike.
+**Käyttöönotto**
+
+1. Google Cloud Consolessa: ota käyttöön **Google Calendar API** ja luo **OAuth client ID** (tyyppi _Web application_). Lisää _Authorized redirect URIs_ -kohtaan `http://localhost:8888/api/auth/callback` ja `https://kotinaytto.netlify.app/api/auth/callback`.
+2. Siirrä OAuth-sovellus _In production_ -tilaan (_Testing_-tilassa refresh token vanhenee 7 päivässä).
+3. Luo näyttöavain, esim. `node -e "console.log(require('crypto').randomBytes(24).toString('base64url'))"`.
+4. Netlifyssä (Site configuration → Environment variables) lisää `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` ja `DISPLAY_ACCESS_KEY` (kaksi jälkimmäistä merkitään _Contains secret values_) ja deployaa uudelleen. Mallina `.env.example`.
+5. Avaa näyttölaitteella `https://kotinaytto.netlify.app/#key=<näyttöavain>` (avain tallentuu laitteelle ja poistuu osoiterivistä), paina **Yhdistä Google-kalenteri** ja anna lupa.
+
+**Paikallinen testaus:** kopioi `.env.example` tiedostoksi `.env`, täytä arvot ja aja `npx netlify-cli dev`. Avaa `http://localhost:8888` (ei 5173, koska functionit toimivat vain Netlify-palvelimen kautta).
 
 ## Vaatimusmäärittely
 

@@ -1,5 +1,5 @@
-import { helsinkiTimeToDate } from '../dateUtils'
-import type { CalendarEvent, EventCalendar } from '../events'
+import { helsinkiTimeToDate } from '../../src/calendar/dateUtils'
+import type { CalendarEvent, EventCalendar } from '../../src/calendar/events'
 
 const API = 'https://www.googleapis.com/calendar/v3'
 const FALLBACK_COLOR = '#4f8ef7'

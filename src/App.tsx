@@ -7,9 +7,6 @@ import GoogleStatus from './calendar/google/GoogleStatus'
 import { useGoogleCalendar } from './calendar/google/useGoogleCalendar'
 import './App.css'
 
-// Ilman client ID:tä (esim. paikallinen kehitys) näytetään mock-data
-const GOOGLE_CLIENT_ID = (import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined) || undefined
-
 function getCurrentMonth() {
   const { year, month } = getTodayInHelsinki()
   return { year, month }
@@ -30,7 +27,7 @@ function App() {
   const [current, setCurrent] = useState(getCurrentMonth)
   const today = useToday()
   const [from, to] = useMemo(() => getVisibleRange(current.year, current.month), [current])
-  const google = useGoogleCalendar(GOOGLE_CLIENT_ID, from, to)
+  const google = useGoogleCalendar(from, to)
   const mockEvents = useMemo(() => createMockEvents(current), [current])
 
   return (
@@ -38,11 +35,12 @@ function App() {
       year={current.year}
       month={current.month}
       today={today}
-      events={GOOGLE_CLIENT_ID ? google.events : mockEvents}
+      events={google.status === 'unavailable' ? mockEvents : google.events}
       headerExtra={
         <GoogleStatus
           status={google.status}
           stale={google.stale}
+          onSaveKey={google.saveKey}
           onConnect={google.connect}
           onDisconnect={google.disconnect}
         />
