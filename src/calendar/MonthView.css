@@ -72,7 +72,8 @@
 
 .month-grid {
   flex: 1;
-  grid-template-rows: repeat(var(--weeks), 1fr);
+  grid-template-rows: repeat(var(--weeks), minmax(0, 1fr));
+  min-height: 0;
 }
 
 .day {
@@ -106,4 +107,62 @@
 .day-today .day-number {
   color: #fff;
   font-weight: 800;
+}
+
+.day {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.day-events {
+  list-style: none;
+  margin: 0.5vmin 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4vmin;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.event,
+.event-more {
+  font-size: clamp(11px, 1.6vmin, 18px);
+  line-height: 1.25;
+  color: #e8edf5;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Kalenterin väri vasemmassa reunassa; otsikko kertoo tapahtuman myös ilman väriä. */
+.event {
+  display: flex;
+  gap: 0.6vmin;
+  padding: 0.2vmin 0.6vmin;
+  border-left: 0.5vmin solid var(--event-color);
+  border-radius: 0.4vmin;
+  background: color-mix(in srgb, var(--event-color) 22%, transparent);
+}
+
+.event-allday {
+  background: var(--event-color);
+  color: #fff;
+  font-weight: 600;
+}
+
+.event-time {
+  flex: none;
+  opacity: 0.8;
+}
+
+.event-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.event-more {
+  color: #8b95a7;
 }
