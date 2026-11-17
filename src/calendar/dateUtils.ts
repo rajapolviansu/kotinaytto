@@ -4,9 +4,13 @@ export interface MonthRef {
   month: number
 }
 
-/** Yksi ruutu kuukausiruudukossa. inMonth on false täyttöpäivillä. */
-export interface CalendarDay extends MonthRef {
+/** Kalenteripäivä. month on 0-pohjainen (0 = tammikuu). */
+export interface DayRef extends MonthRef {
   day: number
+}
+
+/** Yksi ruutu kuukausiruudukossa. inMonth on false täyttöpäivillä. */
+export interface CalendarDay extends DayRef {
   inMonth: boolean
 }
 
@@ -81,4 +85,41 @@ export function getMonthGrid(year: number, month: number): CalendarDay[][] {
   const weeks: CalendarDay[][] = []
   for (let i = 0; i < cells.length; i += 7) weeks.push(cells.slice(i, i + 7))
   return weeks
+}
+
+export const CALENDAR_TIME_ZONE = 'Europe/Helsinki'
+
+const helsinkiFormat = new Intl.DateTimeFormat('en-GB', {
+  timeZone: CALENDAR_TIME_ZONE,
+  hourCycle: 'h23',
+  year: 'numeric',
+  month: 'numeric',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: 'numeric',
+  second: 'numeric',
+})
+
+function getHelsinkiParts(now: Date) {
+  const parts: Record<string, number> = {}
+  for (const { type, value } of helsinkiFormat.formatToParts(now)) {
+    if (type !== 'literal') parts[type] = Number(value)
+  }
+  return parts
+}
+
+/** Kuluva päivä Suomen aikavyöhykkeellä riippumatta laitteen aikavyöhykkeestä. */
+export function getTodayInHelsinki(now: Date = new Date()): DayRef {
+  const { year, month, day } = getHelsinkiParts(now)
+  return { year, month: month - 1, day }
+}
+
+/**
+ * Arvio millisekunneista Suomen seuraavaan keskiyöhön. Arvio voi heittää
+ * kellonsiirtopäivinä (enintään tunnin), joten kutsuja tarkistaa päivän uudelleen.
+ */
+export function getMsUntilHelsinkiMidnight(now: Date = new Date()): number {
+  const { hour, minute, second } = getHelsinkiParts(now)
+  const elapsed = ((hour * 60 + minute) * 60 + second) * 1000 + now.getMilliseconds()
+  return 24 * 60 * 60 * 1000 - elapsed
 }
