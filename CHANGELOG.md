@@ -9,6 +9,7 @@ ja versiointi noudattaa [Semanttista versiointia](https://semver.org/lang/fi/).
 ### Lisätty
 - Kuukausien selaus (edellinen/seuraava kuukausi) ja "Tänään"-painike (V1.2)
 - Kuluvan päivän korostus Suomen aikavyöhykkeellä (Europe/Helsinki); korostus siirtyy keskiyöllä ilman uudelleenlatausta (V1.3)
+- Tapahtumien datamalli (otsikko, alku, loppu, koko päivän -merkintä, kalenteri/väri) ja päivän tapahtumien näyttö kuukausiruudukossa mock-datalla (V1.4)
 
 ### Muutettu
 - Lähdekoodi siirretty TypeScriptiin; lisätty `npm run typecheck` ja tyyppitarkistus CI:hin

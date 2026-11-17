@@ -36,10 +36,11 @@ CI ajaa lintin, tyyppitarkistuksen, testit ja buildin jokaiselle pull requestill
 - ✅ **V1.1** Sovellus näyttää kalenterin kuukausinäkymänä (yksi kuukausi kerrallaan).
 - ✅ **V1.2** Käyttäjä voi selata edelliseen ja seuraavaan kuukauteen sekä palata kuluvaan kuukauteen.
 - ✅ **V1.3** Kuluva päivä on korostettu näkymässä.
-- **V1.4** Kunkin päivän tapahtumat (menot) näkyvät päivän kohdalla kuukausinäkymässä.
+- ✅ **V1.4** Kunkin päivän tapahtumat (menot) näkyvät päivän kohdalla kuukausinäkymässä.
 - **V1.5** Kalenteriin voi yhdistää Gmail- eli Google-tilin (Google Calendar) kirjautumalla tilille Googlen OAuth 2.0 -valtuutuksella. Sovellus pyytää vain kalenterin lukuoikeuden.
 - **V1.6** Yhdistetty tili säilyy, eikä käyttäjän tarvitse kirjautua uudelleen joka käynnistyksellä. Tilin yhteyden voi myös katkaista.
 - **V1.7** Tuki useammalle kalenterille (esim. perheenjäsenten kalenterit) on toivottavaa; niiden tapahtumat erotetaan toisistaan värein.
+- **V1.8** Päivää napauttamalla tai klikkaamalla näkee kaikki kyseisen päivän tapahtumat, myös ne, jotka eivät mahdu kuukausiruudukon soluun. Näkymän voi sulkea, ja se on vain lukunäkymä (ei muokkausta).
 
 ### 2. Kellonaika
 

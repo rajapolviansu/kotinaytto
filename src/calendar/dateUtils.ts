@@ -123,3 +123,29 @@ export function getMsUntilHelsinkiMidnight(now: Date = new Date()): number {
   const elapsed = ((hour * 60 + minute) * 60 + second) * 1000 + now.getMilliseconds()
   return 24 * 60 * 60 * 1000 - elapsed
 }
+
+/**
+ * Suomen ajan hetki (month 0-pohjainen) Date-oliona riippumatta laitteen
+ * aikavyöhykkeestä. Käsittelee kesäajan.
+ */
+export function helsinkiTimeToDate(
+  year: number,
+  month: number,
+  day: number,
+  hour = 0,
+  minute = 0,
+): Date {
+  const wanted = Date.UTC(year, month, day, hour, minute)
+  let t = wanted
+  for (let i = 0; i < 2; i++) {
+    const p = getHelsinkiParts(new Date(t))
+    t -= Date.UTC(p.year, p.month - 1, p.day, p.hour, p.minute) - wanted
+  }
+  return new Date(t)
+}
+
+/** Kellonaika muodossa "9.30" tai "14.05" Suomen ajassa. */
+export function formatTimeInHelsinki(date: Date): string {
+  const { hour, minute } = getHelsinkiParts(date)
+  return `${hour}.${String(minute).padStart(2, '0')}`
+}

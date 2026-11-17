@@ -1,17 +1,66 @@
-import type { CSSProperties } from 'react'
-import { getMonthGrid, getMonthTitle, WEEKDAY_LABELS, type DayRef } from './dateUtils'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
+import { formatTimeInHelsinki, getMonthGrid, getMonthTitle, WEEKDAY_LABELS, type DayRef } from './dateUtils'
+import { getEventsForDay, type CalendarEvent } from './events'
 import './MonthView.css'
 
 interface MonthViewProps {
   year: number
   month: number
   today: DayRef
+  events?: readonly CalendarEvent[]
   onPrevious: () => void
   onNext: () => void
   onToday: () => void
 }
 
-function MonthView({ year, month, today, onPrevious, onNext, onToday }: MonthViewProps) {
+/** Päivän tapahtumat: näyttää vain kokonaan mahtuvat rivit, loput "+N muuta" -rivillä. */
+function DayEvents({ events }: { events: CalendarEvent[] }) {
+  const listRef = useRef<HTMLUListElement>(null)
+  const rowHeight = useRef(0)
+  const [capacity, setCapacity] = useState(Infinity)
+
+  useEffect(() => {
+    const list = listRef.current
+    if (!list) return
+    const update = () => {
+      const row = list.querySelector<HTMLElement>('.event')
+      if (row) rowHeight.current = row.offsetHeight
+      if (!rowHeight.current) return
+      const gap = parseFloat(getComputedStyle(list).rowGap) || 0
+      setCapacity(Math.max(0, Math.floor((list.clientHeight + gap) / (rowHeight.current + gap))))
+    }
+    update()
+    const observer = new ResizeObserver(update)
+    observer.observe(list)
+    return () => observer.disconnect()
+  }, [events.length])
+
+  if (events.length === 0) return null
+
+  // "+N muuta" -rivi vie yhden rivin tilan
+  const fits = events.length <= capacity
+  const visible = fits ? events : events.slice(0, Math.max(0, capacity - 2))
+  const hidden = events.length - visible.length
+
+  return (
+    <ul className="day-events" ref={listRef}>
+      {visible.map((event) => (
+        <li
+          key={event.id}
+          className={event.allDay ? 'event event-allday' : 'event'}
+          style={{ '--event-color': event.calendar.color } as CSSProperties}
+          title={`${event.title} (${event.calendar.name})`}
+        >
+          {!event.allDay && <span className="event-time">{formatTimeInHelsinki(event.start)}</span>}
+          <span className="event-title">{event.title}</span>
+        </li>
+      ))}
+      {hidden > 0 && <li className="event-more">+{hidden} muuta</li>}
+    </ul>
+  )
+}
+
+function MonthView({ year, month, today, events = [], onPrevious, onNext, onToday }: MonthViewProps) {
   const weeks = getMonthGrid(year, month)
   const title = getMonthTitle(year, month)
 
@@ -52,6 +101,7 @@ function MonthView({ year, month, today, onPrevious, onNext, onToday }: MonthVie
               aria-current={isToday ? 'date' : undefined}
             >
               <span className="day-number">{cell.day}</span>
+              <DayEvents events={getEventsForDay(events, cell)} />
             </div>
           )
         })}
