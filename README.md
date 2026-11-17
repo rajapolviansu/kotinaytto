@@ -29,8 +29,6 @@ npm run build      # tyyppitarkistus + tuotantobuild
 
 CI ajaa lintin, tyyppitarkistuksen, testit ja buildin jokaiselle pull requestille ja pushille `develop`- ja `main`-haaroihin.
 
-Windowsissa testit ajetaan PowerShellistä tai CI:ssä. Git Bashista ajettuna Vitest voi kaatua virheeseen `Cannot read properties of undefined (reading 'config')`.
-
 ## Vaatimusmäärittely
 
 ### 1. Kalenterinäkymä
