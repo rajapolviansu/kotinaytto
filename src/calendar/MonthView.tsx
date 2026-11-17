@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties } from 'react'
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { formatTimeInHelsinki, getMonthGrid, getMonthTitle, WEEKDAY_LABELS, type DayRef } from './dateUtils'
 import { getEventsForDay, type CalendarEvent } from './events'
 import './MonthView.css'
@@ -8,6 +8,8 @@ interface MonthViewProps {
   month: number
   today: DayRef
   events?: readonly CalendarEvent[]
+  /** Lisäsisältö otsikkoriville (esim. tilin yhdistämisen tila). */
+  headerExtra?: ReactNode
   onPrevious: () => void
   onNext: () => void
   onToday: () => void
@@ -37,7 +39,7 @@ function DayEvents({ events }: { events: CalendarEvent[] }) {
 
   if (events.length === 0) return null
 
-  // "+N muuta" -rivi vie yhden rivin tilan
+  // "+N muuta" -rivi vie kahden rivin tilan
   const fits = events.length <= capacity
   const visible = fits ? events : events.slice(0, Math.max(0, capacity - 2))
   const hidden = events.length - visible.length
@@ -60,7 +62,16 @@ function DayEvents({ events }: { events: CalendarEvent[] }) {
   )
 }
 
-function MonthView({ year, month, today, events = [], onPrevious, onNext, onToday }: MonthViewProps) {
+function MonthView({
+  year,
+  month,
+  today,
+  events = [],
+  headerExtra,
+  onPrevious,
+  onNext,
+  onToday,
+}: MonthViewProps) {
   const weeks = getMonthGrid(year, month)
   const title = getMonthTitle(year, month)
 
@@ -68,6 +79,7 @@ function MonthView({ year, month, today, events = [], onPrevious, onNext, onToda
     <section className="month-view" aria-label={`Kalenteri, ${title}`}>
       <header className="month-header">
         <h1 aria-live="polite">{title}</h1>
+        {headerExtra}
         <nav className="month-nav" aria-label="Kuukauden selaus">
           <button type="button" onClick={onPrevious} aria-label="Edellinen kuukausi">
             <span aria-hidden="true">‹</span>
