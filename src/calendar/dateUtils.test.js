@@ -5,8 +5,22 @@ import {
   getMonthTitle,
   getWeekdayIndex,
   isLeapYear,
+  shiftMonth,
   WEEKDAY_LABELS,
 } from './dateUtils'
+
+describe('shiftMonth', () => {
+  it('siirtyy seuraavaan ja edelliseen kuukauteen saman vuoden sisällä', () => {
+    expect(shiftMonth(2026, 5, 1)).toEqual({ year: 2026, month: 6 })
+    expect(shiftMonth(2026, 5, -1)).toEqual({ year: 2026, month: 4 })
+  })
+  it('joulukuusta eteenpäin siirrytään seuraavan vuoden tammikuuhun', () => {
+    expect(shiftMonth(2026, 11, 1)).toEqual({ year: 2027, month: 0 })
+  })
+  it('tammikuusta taaksepäin siirrytään edellisen vuoden joulukuuhun', () => {
+    expect(shiftMonth(2026, 0, -1)).toEqual({ year: 2025, month: 11 })
+  })
+})
 
 describe('isLeapYear', () => {
   it('tunnistaa karkausvuodet', () => {
