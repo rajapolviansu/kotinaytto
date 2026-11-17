@@ -1,7 +1,16 @@
+import type { CSSProperties } from 'react'
 import { getMonthGrid, getMonthTitle, WEEKDAY_LABELS } from './dateUtils'
 import './MonthView.css'
 
-function MonthView({ year, month, onPrevious, onNext, onToday }) {
+interface MonthViewProps {
+  year: number
+  month: number
+  onPrevious: () => void
+  onNext: () => void
+  onToday: () => void
+}
+
+function MonthView({ year, month, onPrevious, onNext, onToday }: MonthViewProps) {
   const weeks = getMonthGrid(year, month)
   const title = getMonthTitle(year, month)
 
@@ -28,7 +37,7 @@ function MonthView({ year, month, onPrevious, onNext, onToday }) {
         ))}
       </div>
 
-      <div className="month-grid" style={{ '--weeks': weeks.length }}>
+      <div className="month-grid" style={{ '--weeks': weeks.length } as CSSProperties}>
         {weeks.flat().map((cell) => (
           <div
             key={`${cell.year}-${cell.month}-${cell.day}`}

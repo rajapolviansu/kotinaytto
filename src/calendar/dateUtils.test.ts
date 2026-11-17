@@ -84,7 +84,7 @@ describe('getMonthGrid', () => {
   it('karkausvuoden helmikuussa on 29 kuukauden päivää', () => {
     const days = getMonthGrid(2024, 1).flat().filter((d) => d.inMonth)
     expect(days).toHaveLength(29)
-    expect(days.at(-1).day).toBe(29)
+    expect(days.at(-1)?.day).toBe(29)
   })
 
   it('kuukausi joka alkaa maanantaina ei sisällä edellisen kuukauden päiviä: helmikuu 2027', () => {
