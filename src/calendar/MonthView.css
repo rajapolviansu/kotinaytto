@@ -95,3 +95,15 @@
 .day-outside .day-number {
   color: #4b5568;
 }
+
+/* Kuluva päivä: täyttö + rengas + lihavointi, joten korostus ei nojaa pelkkään väriin.
+   Sininen täyttö ja valkoinen numero erottuvat sekä tummalla että vaalealla pohjalla. */
+.day-today {
+  background: #2f6fe0;
+  box-shadow: 0 0 0 0.4vmin #9cc2ff;
+}
+
+.day-today .day-number {
+  color: #fff;
+  font-weight: 800;
+}

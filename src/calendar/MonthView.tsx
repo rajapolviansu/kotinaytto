@@ -1,16 +1,17 @@
 import type { CSSProperties } from 'react'
-import { getMonthGrid, getMonthTitle, WEEKDAY_LABELS } from './dateUtils'
+import { getMonthGrid, getMonthTitle, WEEKDAY_LABELS, type DayRef } from './dateUtils'
 import './MonthView.css'
 
 interface MonthViewProps {
   year: number
   month: number
+  today: DayRef
   onPrevious: () => void
   onNext: () => void
   onToday: () => void
 }
 
-function MonthView({ year, month, onPrevious, onNext, onToday }: MonthViewProps) {
+function MonthView({ year, month, today, onPrevious, onNext, onToday }: MonthViewProps) {
   const weeks = getMonthGrid(year, month)
   const title = getMonthTitle(year, month)
 
@@ -38,14 +39,22 @@ function MonthView({ year, month, onPrevious, onNext, onToday }: MonthViewProps)
       </div>
 
       <div className="month-grid" style={{ '--weeks': weeks.length } as CSSProperties}>
-        {weeks.flat().map((cell) => (
-          <div
-            key={`${cell.year}-${cell.month}-${cell.day}`}
-            className={cell.inMonth ? 'day' : 'day day-outside'}
-          >
-            <span className="day-number">{cell.day}</span>
-          </div>
-        ))}
+        {weeks.flat().map((cell) => {
+          const isToday =
+            cell.year === today.year && cell.month === today.month && cell.day === today.day
+          const className = ['day', cell.inMonth ? '' : 'day-outside', isToday ? 'day-today' : '']
+            .filter(Boolean)
+            .join(' ')
+          return (
+            <div
+              key={`${cell.year}-${cell.month}-${cell.day}`}
+              className={className}
+              aria-current={isToday ? 'date' : undefined}
+            >
+              <span className="day-number">{cell.day}</span>
+            </div>
+          )
+        })}
       </div>
     </section>
   )

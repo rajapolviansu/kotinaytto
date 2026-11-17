@@ -3,6 +3,8 @@ import {
   getDaysInMonth,
   getMonthGrid,
   getMonthTitle,
+  getMsUntilHelsinkiMidnight,
+  getTodayInHelsinki,
   getWeekdayIndex,
   isLeapYear,
   shiftMonth,
@@ -102,5 +104,28 @@ describe('getMonthGrid', () => {
 describe('WEEKDAY_LABELS', () => {
   it('alkaa maanantaista', () => {
     expect(WEEKDAY_LABELS).toEqual(['Ma', 'Ti', 'Ke', 'To', 'Pe', 'La', 'Su'])
+  })
+})
+
+describe('getTodayInHelsinki', () => {
+  it('käyttää Suomen aikaa: UTC-ilta on jo seuraava päivä Helsingissä', () => {
+    // 22:30 UTC talvella = 00:30 Helsingissä (UTC+2)
+    expect(getTodayInHelsinki(new Date('2026-01-14T22:30:00Z'))).toEqual({ year: 2026, month: 0, day: 15 })
+  })
+  it('käyttää kesäaikaa (UTC+3)', () => {
+    expect(getTodayInHelsinki(new Date('2026-06-30T21:00:00Z'))).toEqual({ year: 2026, month: 6, day: 1 })
+    expect(getTodayInHelsinki(new Date('2026-06-30T20:59:00Z'))).toEqual({ year: 2026, month: 5, day: 30 })
+  })
+  it('käsittelee vuodenvaihteen', () => {
+    expect(getTodayInHelsinki(new Date('2026-12-31T22:00:00Z'))).toEqual({ year: 2027, month: 0, day: 1 })
+  })
+})
+
+describe('getMsUntilHelsinkiMidnight', () => {
+  it('laskee ajan seuraavaan keskiyöhön Suomen aikaa', () => {
+    // 21:00 UTC kesällä = 00:00 Helsingissä -> vuorokausi seuraavaan keskiyöhön
+    expect(getMsUntilHelsinkiMidnight(new Date('2026-06-30T21:00:00Z'))).toBe(24 * 3600 * 1000)
+    // 20:59:00 UTC = 23:59:00 Helsingissä -> minuutti
+    expect(getMsUntilHelsinkiMidnight(new Date('2026-06-30T20:59:00Z'))).toBe(60 * 1000)
   })
 })
