@@ -2,17 +2,8 @@
 
 Moduulinen kotinäyttö, josta näkee perheen menot suoraan.
 
-## Mockup
+<img width="1208" height="577" alt="image" src="https://github.com/user-attachments/assets/b0f976d6-476f-49dc-91f5-296e38d49eb2" />
 
-### Tumma teema
-
-![Kotinäytön mockup, tumma teema](docs/mockup-dark.png)
-
-### Vaalea teema
-
-![Kotinäytön mockup, vaalea teema](docs/mockup-light.png)
-
-Kuvat ovat havainnollistavia luonnoksia, ei sitova ulkoasu. Tapahtumat ja tehtävät ovat esimerkkejä.
 
 ## Kehitys
 
