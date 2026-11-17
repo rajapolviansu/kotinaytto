@@ -1,0 +1,56 @@
+.month-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 2vmin 2.5vmin;
+  text-align: left;
+}
+
+.month-header h1 {
+  margin: 0 0 2vmin;
+  font-size: clamp(28px, 5vmin, 56px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #e8edf5;
+}
+
+.month-weekdays,
+.month-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.8vmin;
+}
+
+.month-weekdays {
+  margin-bottom: 0.8vmin;
+  text-align: center;
+  font-size: clamp(14px, 2.2vmin, 24px);
+  color: #8b95a7;
+}
+
+.month-grid {
+  flex: 1;
+  grid-template-rows: repeat(var(--weeks), 1fr);
+}
+
+.day {
+  background: #1c2638;
+  border-radius: 1.2vmin;
+  padding: 1vmin 1.2vmin;
+  min-height: 0;
+}
+
+.day-number {
+  font-size: clamp(14px, 2.4vmin, 26px);
+  font-weight: 600;
+  color: #e8edf5;
+}
+
+.day-outside {
+  background: #131b2b;
+}
+
+.day-outside .day-number {
+  color: #4b5568;
+}
