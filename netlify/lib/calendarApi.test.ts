@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { mapGoogleEvent } from './api'
-import { getEventsForDay } from '../events'
+import { mapGoogleEvent } from './calendarApi'
+import { getEventsForDay } from '../../src/calendar/events'
 
 const calendar = { id: 'cal', name: 'Perhe', color: '#2f9e6b' }
 
