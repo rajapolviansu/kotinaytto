@@ -1,13 +1,25 @@
 import { getMonthGrid, getMonthTitle, WEEKDAY_LABELS } from './dateUtils'
 import './MonthView.css'
 
-function MonthView({ year, month }) {
+function MonthView({ year, month, onPrevious, onNext, onToday }) {
   const weeks = getMonthGrid(year, month)
+  const title = getMonthTitle(year, month)
 
   return (
-    <section className="month-view">
+    <section className="month-view" aria-label={`Kalenteri, ${title}`}>
       <header className="month-header">
-        <h1>{getMonthTitle(year, month)}</h1>
+        <h1 aria-live="polite">{title}</h1>
+        <nav className="month-nav" aria-label="Kuukauden selaus">
+          <button type="button" onClick={onPrevious} aria-label="Edellinen kuukausi">
+            <span aria-hidden="true">‹</span>
+          </button>
+          <button type="button" className="month-today" onClick={onToday} aria-label="Siirry kuluvaan kuukauteen">
+            Tänään
+          </button>
+          <button type="button" onClick={onNext} aria-label="Seuraava kuukausi">
+            <span aria-hidden="true">›</span>
+          </button>
+        </nav>
       </header>
 
       <div className="month-weekdays">

@@ -31,6 +31,15 @@ export function getWeekdayIndex(year, month, day) {
   return (date.getDay() + 6) % 7
 }
 
+/**
+ * Siirtää kuukautta delta kuukautta (negatiivinen = taaksepäin).
+ * Käsittelee vuodenvaihteen molempiin suuntiin. month on 0-pohjainen.
+ */
+export function shiftMonth(year, month, delta) {
+  const index = year * 12 + month + delta
+  return { year: Math.floor(index / 12), month: ((index % 12) + 12) % 12 }
+}
+
 export function getMonthTitle(year, month) {
   return `${MONTH_NAMES[month]} ${year}`
 }

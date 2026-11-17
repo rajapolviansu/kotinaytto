@@ -1,13 +1,13 @@
 # Changelog
 
 Tähän tiedostoon kirjataan kaikki merkittävät muutokset.
-Formaatti perustuu [Keep a Changelog](https://keepachangelog.com/fi/1.1.0/) -ohjeeseen,
+Formaatti perustuu [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) -ohjeeseen,
 ja versiointi noudattaa [Semanttista versiointia](https://semver.org/lang/fi/).
 
 ## [Julkaisematon]
 
 ### Lisätty
-- Kuukausien selaus (edellinen/seuraava kuukausi)
+- Kuukausien selaus (edellinen/seuraava kuukausi) ja "Tänään"-painike (V1.2)
 
 ## [1.1.0] - 2026-11-17
 
