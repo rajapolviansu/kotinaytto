@@ -14,13 +14,30 @@ Moduulinen kotinäyttö, josta näkee perheen menot suoraan.
 
 Kuvat ovat havainnollistavia luonnoksia, ei sitova ulkoasu. Tapahtumat ja tehtävät ovat esimerkkejä.
 
+## Kehitys
+
+Teknologiat: [React](https://react.dev/), [TypeScript](https://www.typescriptlang.org/), [Vite](https://vite.dev/) ja [Vitest](https://vitest.dev/).
+
+```bash
+npm install        # asenna riippuvuudet
+npm run dev        # kehityspalvelin
+npm run typecheck  # TypeScript-tyyppitarkistus
+npm run lint       # ESLint
+npm test           # yksikkötestit
+npm run build      # tyyppitarkistus + tuotantobuild
+```
+
+CI ajaa lintin, tyyppitarkistuksen, testit ja buildin jokaiselle pull requestille ja pushille `develop`- ja `main`-haaroihin.
+
+Windowsissa testit ajetaan PowerShellistä tai CI:ssä. Git Bashista ajettuna Vitest voi kaatua virheeseen `Cannot read properties of undefined (reading 'config')`.
+
 ## Vaatimusmäärittely
 
 ### 1. Kalenterinäkymä
 
 - ✅ **V1.1** Sovellus näyttää kalenterin kuukausinäkymänä (yksi kuukausi kerrallaan).
 - ✅ **V1.2** Käyttäjä voi selata edelliseen ja seuraavaan kuukauteen sekä palata kuluvaan kuukauteen.
-- **V1.3** Kuluva päivä on korostettu näkymässä.
+- ✅ **V1.3** Kuluva päivä on korostettu näkymässä.
 - **V1.4** Kunkin päivän tapahtumat (menot) näkyvät päivän kohdalla kuukausinäkymässä.
 - **V1.5** Kalenteriin voi yhdistää Gmail- eli Google-tilin (Google Calendar) kirjautumalla tilille Googlen OAuth 2.0 -valtuutuksella. Sovellus pyytää vain kalenterin lukuoikeuden.
 - **V1.6** Yhdistetty tili säilyy, eikä käyttäjän tarvitse kirjautua uudelleen joka käynnistyksellä. Tilin yhteyden voi myös katkaista.
