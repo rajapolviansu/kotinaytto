@@ -2,6 +2,8 @@ import { helsinkiTimeToDate } from '../../src/calendar/dateUtils'
 import type { CalendarEvent, EventCalendar } from '../../src/calendar/events'
 
 const API = 'https://www.googleapis.com/calendar/v3'
+const TASKS_API = 'https://tasks.googleapis.com/tasks/v1'
+const TASKS_COLOR = '#8e6bd8'
 const FALLBACK_COLOR = '#4f8ef7'
 
 export class HttpError extends Error {
@@ -54,6 +56,33 @@ export function mapGoogleEvent(item: GoogleEvent, calendar: EventCalendar): Cale
     end,
     allDay,
     calendar,
+  }
+}
+
+export interface GoogleTask {
+  id: string
+  title?: string
+  status?: string
+  /** RFC 3339; Tasks käyttää vain päivämääräosaa (kellonaika on aina 00:00 UTC). */
+  due?: string
+  deleted?: boolean
+}
+
+/** Muuntaa Google-tehtävän koko päivän tapahtumaksi eräpäivälleen. Ilman eräpäivää ei voi sijoittaa kalenteriin. */
+export function mapGoogleTask(item: GoogleTask, calendar: EventCalendar): CalendarEvent | null {
+  if (item.deleted) return null
+  const start = parseDateOnly(item.due?.slice(0, 10))
+  if (!start) return null
+  const [y, m, d] = (item.due as string).slice(0, 10).split('-').map(Number)
+  return {
+    id: `${calendar.id}:${item.id}`,
+    title: item.title?.trim() || '(Ei otsikkoa)',
+    start,
+    end: helsinkiTimeToDate(y, m - 1, d + 1),
+    allDay: true,
+    calendar,
+    task: true,
+    done: item.status === 'completed',
   }
 }
 
@@ -111,8 +140,40 @@ export async function fetchGoogleEvents(
   signal?: AbortSignal,
 ): Promise<CalendarEvent[]> {
   const calendars = await fetchCalendars(token, signal)
-  const lists = await Promise.all(
-    calendars.map((calendar) => fetchCalendarEvents(token, calendar, from, to, signal)),
+  const [lists, tasks] = await Promise.all([
+    Promise.all(calendars.map((calendar) => fetchCalendarEvents(token, calendar, from, to, signal))),
+    fetchTaskEvents(token, signal),
+  ])
+  const fromMs = from.getTime()
+  const toMs = to.getTime()
+  const tasksInRange = tasks.filter((task) => task.start.getTime() < toMs && task.end.getTime() > fromMs)
+  return [...lists.flat(), ...tasksInRange]
+}
+
+async function fetchTaskEvents(token: string, signal?: AbortSignal): Promise<CalendarEvent[]> {
+  const listsUrl = new URL(`${TASKS_API}/users/@me/lists`)
+  listsUrl.searchParams.set('maxResults', '100')
+  const lists = await getJson<{ items?: { id: string; title?: string }[] }>(listsUrl, token, signal)
+  const perList = await Promise.all(
+    (lists.items ?? []).map(async (list) => {
+      const calendar: EventCalendar = { id: `tasks-${list.id}`, name: list.title ?? 'Tehtävät', color: TASKS_COLOR }
+      const events: CalendarEvent[] = []
+      let pageToken: string | undefined
+      do {
+        const url = new URL(`${TASKS_API}/lists/${encodeURIComponent(list.id)}/tasks`)
+        url.searchParams.set('maxResults', '100')
+        url.searchParams.set('showCompleted', 'true')
+        url.searchParams.set('showHidden', 'true')
+        if (pageToken) url.searchParams.set('pageToken', pageToken)
+        const data = await getJson<{ items?: GoogleTask[]; nextPageToken?: string }>(url, token, signal)
+        for (const item of data.items ?? []) {
+          const event = mapGoogleTask(item, calendar)
+          if (event) events.push(event)
+        }
+        pageToken = data.nextPageToken
+      } while (pageToken)
+      return events
+    }),
   )
-  return lists.flat()
+  return perList.flat()
 }

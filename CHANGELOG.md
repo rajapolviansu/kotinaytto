@@ -13,6 +13,7 @@ ja versiointi noudattaa [Semanttista versiointia](https://semver.org/lang/fi/).
 - Tapahtumien datamalli (otsikko, alku, loppu, koko päivän -merkintä, kalenteri/väri) ja päivän tapahtumien näyttö kuukausiruudukossa mock-datalla (V1.4)
 
 - Google-kalenterin yhdistäminen Netlify Functions -backendin kautta: kertakirjautuminen, refresh token säilyy palvelimella ja access token uusitaan automaattisesti, tapahtumat haetaan kaikista valituista kalentereista omin värein ja päivitetään minuutin välein, yhteyden voi katkaista (V1.5, V1.6, V1.7). Rajapinnat suojataan näyttöavaimella. Ilman backendiä näytetään mock-data.
+- Google Tasks -tehtävät näytetään kalenterissa koko päivän tapahtumina eräpäivänään; suoritetut himmennetään ja yliviivataan (V3.1, V3.3, V3.4). Vaatii Google-tilin uudelleenyhdistämisen (uusi scope `tasks.readonly`) ja Google Tasks API:n käyttöönoton.
 
 ### Muutettu
 - Lähdekoodi siirretty TypeScriptiin; lisätty `npm run typecheck` ja tyyppitarkistus CI:hin

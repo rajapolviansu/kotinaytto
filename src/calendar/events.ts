@@ -23,6 +23,10 @@ export interface CalendarEvent {
   end: Date
   allDay: boolean
   calendar: EventCalendar
+  /** Google Tasks -tehtävä, joka näytetään eräpäivänään koko päivän tapahtumana. */
+  task?: boolean
+  /** Tehtävä on merkitty suoritetuksi. */
+  done?: boolean
 }
 
 /** Vertailtava avain päivälle (month 0-pohjainen). */
