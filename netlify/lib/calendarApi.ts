@@ -8,9 +8,17 @@ const FALLBACK_COLOR = '#4f8ef7'
 
 export class HttpError extends Error {
   readonly status: number
-  constructor(status: number) {
-    super(`Google Calendar API: HTTP ${status}`)
+  /** Googlen virheen syy (esim. ACCESS_TOKEN_SCOPE_INSUFFICIENT), jos saatavilla. */
+  readonly reason?: string
+  constructor(status: number, reason?: string) {
+    super(`Google API: HTTP ${status}${reason ? ` (${reason})` : ''}`)
     this.status = status
+    this.reason = reason
+  }
+
+  /** Tallennettu lupa ei kata tarvittavia oikeuksia: tili on yhdistettävä uudelleen. */
+  get isInsufficientScope(): boolean {
+    return this.status === 403 && this.reason === 'ACCESS_TOKEN_SCOPE_INSUFFICIENT'
   }
 }
 
@@ -88,7 +96,13 @@ export function mapGoogleTask(item: GoogleTask, calendar: EventCalendar): Calend
 
 async function getJson<T>(url: URL, token: string, signal?: AbortSignal): Promise<T> {
   const response = await fetch(url, { headers: { Authorization: `Bearer ${token}` }, signal })
-  if (!response.ok) throw new HttpError(response.status)
+  if (!response.ok) {
+    const body = (await response.json().catch(() => ({}))) as {
+      error?: { details?: { reason?: string }[]; errors?: { reason?: string }[] }
+    }
+    const reason = body.error?.details?.find((d) => d.reason)?.reason ?? body.error?.errors?.[0]?.reason
+    throw new HttpError(response.status, reason)
+  }
   return (await response.json()) as T
 }
 
@@ -142,7 +156,12 @@ export async function fetchGoogleEvents(
   const calendars = await fetchCalendars(token, signal)
   const [lists, tasks] = await Promise.all([
     Promise.all(calendars.map((calendar) => fetchCalendarEvents(token, calendar, from, to, signal))),
-    fetchTaskEvents(token, signal),
+    // Tehtävien virhe ei saa estää tapahtumien näyttämistä; puuttuva lupa kuitenkin vaatii uudelleenyhdistämisen
+    fetchTaskEvents(token, signal).catch((error: unknown) => {
+      if (error instanceof HttpError && error.isInsufficientScope) throw error
+      console.error('Tehtävien haku epäonnistui:', error instanceof Error ? error.message : error)
+      return [] as CalendarEvent[]
+    }),
   ])
   const fromMs = from.getTime()
   const toMs = to.getTime()

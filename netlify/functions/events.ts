@@ -18,6 +18,8 @@ export default async (req: Request): Promise<Response> => {
     return json({ events }) // Date-oliot muuttuvat ISO-merkkijonoiksi
   } catch (error) {
     if (error instanceof NotConnectedError) return json({ error: 'not_connected' }, 409)
+    // Vanha lupa ei sisällä Tasks-oikeutta: näytetään "Yhdistä"-painike uudelleenyhdistämistä varten
+    if (error instanceof HttpError && error.isInsufficientScope) return json({ error: 'not_connected' }, 409)
     if (error instanceof HttpError && error.status === 401) clearAccessToken() // Seuraava haku uusii tokenin
     console.error(error instanceof Error ? error.message : 'Tuntematon virhe')
     return json({ error: 'upstream_error' }, 502)
