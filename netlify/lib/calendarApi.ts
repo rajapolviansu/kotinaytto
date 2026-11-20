@@ -156,7 +156,12 @@ export async function fetchGoogleEvents(
   const calendars = await fetchCalendars(token, signal)
   const [lists, tasks] = await Promise.all([
     Promise.all(calendars.map((calendar) => fetchCalendarEvents(token, calendar, from, to, signal))),
-    fetchTaskEvents(token, signal),
+    // Tehtävien virhe ei saa estää tapahtumien näyttämistä; puuttuva lupa kuitenkin vaatii uudelleenyhdistämisen
+    fetchTaskEvents(token, signal).catch((error: unknown) => {
+      if (error instanceof HttpError && error.isInsufficientScope) throw error
+      console.error('Tehtävien haku epäonnistui:', error instanceof Error ? error.message : error)
+      return [] as CalendarEvent[]
+    }),
   ])
   const fromMs = from.getTime()
   const toMs = to.getTime()
