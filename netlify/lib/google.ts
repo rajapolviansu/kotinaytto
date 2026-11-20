@@ -6,7 +6,8 @@ import { getStore } from '@netlify/blobs'
 const AUTH_URL = 'https://accounts.google.com/o/oauth2/v2/auth'
 const TOKEN_URL = 'https://oauth2.googleapis.com/token'
 const REVOKE_URL = 'https://oauth2.googleapis.com/revoke'
-export const SCOPE = 'https://www.googleapis.com/auth/calendar.readonly'
+export const SCOPE =
+  'https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/tasks.readonly'
 
 const REFRESH_TOKEN_KEY = 'google-refresh-token'
 const EXPIRY_MARGIN_MS = 60_000

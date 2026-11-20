@@ -166,3 +166,11 @@
 .event-more {
   color: #8b95a7;
 }
+
+.event-done {
+  opacity: 0.55;
+}
+
+.event-done .event-title {
+  text-decoration: line-through;
+}

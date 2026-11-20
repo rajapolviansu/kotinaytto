@@ -1,6 +1,6 @@
-# kotinaytto
+# Kotinäyttö
 
-Moduulinen kotinäyttö, josta näkee perheen menot suoraan.
+Moduulinen kotinäyttö, josta näkee perheen menot suoraan kalenterinäkymässä.
 
 <img width="1208" height="577" alt="image" src="https://github.com/user-attachments/assets/b0f976d6-476f-49dc-91f5-296e38d49eb2" />
 
@@ -61,8 +61,8 @@ Sivu on asennettava web-sovellus (PWA), joka avautuu ilman selaimen osoitepalkki
 
 ### 3. Tehtävät
 
-- **V3.1** Jos Google-kalenterissa tai Google Tasks -tehtävälistassa on tehtäviä, ne listataan näytölle.
-- **V3.2** Tehtävälista päivittyy reaaliajassa: uusi, muuttunut tai poistettu tehtävä näkyy näytöllä ilman, että sivua tarvitsee ladata uudelleen.
+- **V3.1** Jos Google-kalenterissa tai Google Tasks -tehtävälistassa on tehtäviä, ne näytetään kalenterissa.
+- **V3.2** Tehtävät päivittyvät reaaliajassa: uusi, muuttunut tai poistettu tehtävä näkyy näytöllä ilman, että sivua tarvitsee ladata uudelleen.
 - **V3.3** Tehtävästä näytetään vähintään otsikko ja eräpäivä. Tehtävät järjestetään eräpäivän mukaan, ja myöhässä olevat merkitään selvästi.
 - **V3.4** Suoritetuksi merkityt tehtävät poistuvat listalta tai erottuvat selvästi.
 
