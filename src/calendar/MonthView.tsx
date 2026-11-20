@@ -49,7 +49,7 @@ function DayEvents({ events }: { events: CalendarEvent[] }) {
       {visible.map((event) => (
         <li
           key={event.id}
-          className={event.allDay ? 'event event-allday' : 'event'}
+          className={['event', event.allDay ? 'event-allday' : '', event.done ? 'event-done' : ''].filter(Boolean).join(' ')}
           style={{ '--event-color': event.calendar.color } as CSSProperties}
           title={`${event.title} (${event.calendar.name})`}
         >
