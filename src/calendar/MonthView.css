@@ -174,3 +174,97 @@
 .event-done .event-title {
   text-decoration: line-through;
 }
+
+.day-clickable {
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.day-clickable:focus-visible {
+  outline: 3px solid #6aa5ff;
+  outline-offset: 2px;
+}
+
+.popup-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3vmin;
+  background: rgba(5, 9, 18, 0.7);
+}
+
+.popup {
+  display: flex;
+  flex-direction: column;
+  width: min(90vw, 700px);
+  max-height: 85vh;
+  padding: 2.5vmin;
+  box-sizing: border-box;
+  background: #1c2638;
+  border-radius: 2vmin;
+  box-shadow: 0 1vmin 4vmin rgba(0, 0, 0, 0.5);
+  color: #e8edf5;
+}
+
+.popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2vmin;
+  margin-bottom: 2vmin;
+}
+
+.popup-header h2 {
+  margin: 0;
+  font-size: clamp(20px, 3.4vmin, 36px);
+  text-transform: capitalize;
+}
+
+.popup-close {
+  min-width: 48px;
+  min-height: 48px;
+  font: inherit;
+  font-size: clamp(24px, 4vmin, 40px);
+  color: #e8edf5;
+  background: #263350;
+  border: 2px solid transparent;
+  border-radius: 1.2vmin;
+  cursor: pointer;
+}
+
+.popup-close:focus-visible {
+  outline: 3px solid #6aa5ff;
+  outline-offset: 2px;
+}
+
+.popup-events {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1vmin;
+  overflow-y: auto;
+}
+
+.popup-events .event {
+  font-size: clamp(16px, 2.4vmin, 26px);
+  padding: 1vmin 1.4vmin;
+  gap: 1.4vmin;
+  white-space: normal;
+  align-items: baseline;
+}
+
+.popup-events .event-title {
+  flex: 1;
+  overflow: visible;
+}
+
+.event-calendar {
+  flex: none;
+  font-size: 0.75em;
+  opacity: 0.7;
+}

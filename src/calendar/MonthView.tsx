@@ -1,5 +1,13 @@
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
-import { formatTimeInHelsinki, getMonthGrid, getMonthTitle, WEEKDAY_LABELS, type DayRef } from './dateUtils'
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import {
+  formatTimeInHelsinki,
+  getMonthGrid,
+  getMonthTitle,
+  getWeekdayIndex,
+  MONTH_NAMES,
+  WEEKDAY_LABELS,
+  type DayRef,
+} from './dateUtils'
 import { getEventsForDay, type CalendarEvent } from './events'
 import './MonthView.css'
 
@@ -62,6 +70,56 @@ function DayEvents({ events }: { events: CalendarEvent[] }) {
   )
 }
 
+const WEEKDAY_NAMES = ['maanantai', 'tiistai', 'keskiviikko', 'torstai', 'perjantai', 'lauantai', 'sunnuntai']
+
+/** Popup, jossa yhden päivän kaikki tapahtumat listana. */
+function DayPopup({ day, events, onClose }: { day: DayRef; events: CalendarEvent[]; onClose: () => void }) {
+  const closeRef = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    closeRef.current?.focus()
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [onClose])
+
+  const heading = `${WEEKDAY_NAMES[getWeekdayIndex(day.year, day.month, day.day)]} ${day.day}. ${MONTH_NAMES[day.month].toLowerCase()}ta ${day.year}`
+
+  return (
+    <div className="popup-backdrop" onClick={onClose}>
+      <div
+        className="popup"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="day-popup-title"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <header className="popup-header">
+          <h2 id="day-popup-title">{heading}</h2>
+          <button ref={closeRef} type="button" className="popup-close" onClick={onClose} aria-label="Sulje">
+            <span aria-hidden="true">×</span>
+          </button>
+        </header>
+        <ul className="popup-events">
+          {events.map((event) => (
+            <li
+              key={event.id}
+              className={['event', event.allDay ? 'event-allday' : '', event.done ? 'event-done' : ''].filter(Boolean).join(' ')}
+              style={{ '--event-color': event.calendar.color } as CSSProperties}
+            >
+              <span className="event-time">{event.allDay ? 'Koko päivä' : formatTimeInHelsinki(event.start)}</span>
+              <span className="event-title">{event.title}</span>
+              <span className="event-calendar">{event.calendar.name}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  )
+}
+
 function MonthView({
   year,
   month,
@@ -73,6 +131,8 @@ function MonthView({
   onToday,
 }: MonthViewProps) {
   const weeks = getMonthGrid(year, month)
+  const [selected, setSelected] = useState<DayRef | null>(null)
+  const closePopup = useCallback(() => setSelected(null), [])
   const title = getMonthTitle(year, month)
 
   return (
@@ -106,18 +166,39 @@ function MonthView({
           const className = ['day', cell.inMonth ? '' : 'day-outside', isToday ? 'day-today' : '']
             .filter(Boolean)
             .join(' ')
+          const dayEvents = getEventsForDay(events, cell)
+          const clickable = dayEvents.length > 0
+          const open = () => setSelected({ year: cell.year, month: cell.month, day: cell.day })
           return (
             <div
               key={`${cell.year}-${cell.month}-${cell.day}`}
-              className={className}
+              className={clickable ? `${className} day-clickable` : className}
               aria-current={isToday ? 'date' : undefined}
+              {...(clickable
+                ? {
+                    role: 'button',
+                    tabIndex: 0,
+                    'aria-label': `${cell.day}. ${MONTH_NAMES[cell.month].toLowerCase()}ta, ${dayEvents.length} tapahtumaa`,
+                    onClick: open,
+                    onKeyDown: (e: React.KeyboardEvent) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        open()
+                      }
+                    },
+                  }
+                : {})}
             >
               <span className="day-number">{cell.day}</span>
-              <DayEvents events={getEventsForDay(events, cell)} />
+              <DayEvents events={dayEvents} />
             </div>
           )
         })}
       </div>
+
+      {selected && (
+        <DayPopup day={selected} events={getEventsForDay(events, selected)} onClose={closePopup} />
+      )}
     </section>
   )
 }
